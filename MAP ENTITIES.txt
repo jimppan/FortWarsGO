@@ -1,0 +1,9 @@
+These entities with names are REQUIRED for your fortwars map
+
+- func_breakable ("fortwarsgo_barrier"); // More than one of these entities may exist, aslong as they have the same name
+- info_target ("fortwarsgo_ct_flag_spawn"); 
+- info_target ("fortwarsgo_t_flag_spawn");
+- trigger_multiple ("fortwarsgo_ct_capture_zone"); // More than one of these entities may exist, aslong as they have the same name
+- trigger_multiple ("fortwarsgo_t_capture_zone"); // (More than one of these entities may exist, aslong as they have the same name
+- trigger_multiple ("fortwarsgo_t_build_zone"); // (Should cover every part of the map Ts should be able to build at) More than one of these entities may exist, aslong as they have the same name
+- trigger_multiple ("fortwarsgo_ct_build_zone"); // (Should cover every part of the map CTs should be able to build at) More than one of these entities may exist, aslong as they have the same name

@@ -1,0 +1,105 @@
+"Props"
+{
+	"Beam Bundle"
+	{
+		"model" "models/props/ar_dizzy/dizzy_ibeam_bundle/dizzy_ibeam_bundle_floor.mdl"
+		"price"	"100"
+		"health"	"700"
+	}
+	"Barrel Pallet"
+	{
+		"model" "models/props/de_train/pallet_barrels.mdl"
+		"price"	"40"
+		"health"	"300"
+	}
+	"Single Large Beam"
+	{
+		"model"	"models/props/de_train/hr_t/i_beam_e/i_beam_e.mdl"
+		"price" "100"
+		"health"	"400"
+	}
+	"Stairs"
+	{
+		"model"	"models/props_exteriors/wood_porchsteps_02.mdl"
+		"price" "30"
+		"health"	"500"
+	}
+	"Wooden Wall"
+	{
+		"model"	"models/props/cs_militia/bathroomwallhole01_wood_broken.mdl"
+		"price" "80"
+		"health"	"200"
+	}
+	"Big Stone Wall"
+	{
+		"model"	"models/props_cemetery/crypts_wall.mdl"
+		"price" "300"
+		"health"	"2000"
+	}
+	"Door"
+	{
+		"model"	"models/props_urban/gate_wall_gate002_64.mdl"
+		"price" "80"
+		"health"	"400"
+	}
+	"Transformer"
+	{
+		"model" "models/props_c17/substation_transformer01a.mdl"
+		"price" "300"
+		"health"	"1000"
+	}
+	"Box"
+	{
+		"model"	"models/props/cs_assault/dryer_box.mdl"
+		"price" "20"
+		"health"	"200"
+	}
+	"2x3x2 Box Stack"
+	{
+		"model"	"models/props/cs_assault/box_stack1.mdl"
+		"price" "240"
+		"health"	"1200"
+	}
+	"3x3x1 Box Stack"
+	{
+		"model"	"models/props/cs_assault/box_stack2.mdl"
+		"price" "180"
+		"health"	"1000"
+	}
+	"Electric Box"
+	{
+		"model"	"models/props/de_train/train_signalbox_01_new.mdl"
+		"price" "30"
+		"health"	"400"
+	}
+	"Small Fence"
+	{
+		"model"	"models/props_c17/fence02b.mdl"
+		"price" "30"
+		"health"	"200"
+	}
+	"Large Fence"
+	{
+		"model"	"models/props_c17/fence03a.mdl"
+		"price" "100"
+		"health"	"500"
+	}
+	"Desk"
+	{
+		"model" "models/props_wasteland/controlroom_desk001a.mdl"
+		"price" "30"
+		"health"	"600"
+	}
+	"Stove"
+	{
+		"model" "models/props_c17/furniturestove001a.mdl"
+		"price" "50"
+		"health"	"50"
+	}
+	"Washing Machine"
+	{
+		"model" "models/props_c17/furniturewashingmachine001a.mdl"
+		"price" "50"
+		"health"	"50"
+	}
+}
