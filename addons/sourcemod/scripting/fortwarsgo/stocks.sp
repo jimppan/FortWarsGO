@@ -112,12 +112,6 @@ stock void CreateFlagTrigger(int flag, float pos[3])
 
 stock void PickUpFlag(int flag, int client)
 {
-	if(g_eGameState != FortWarsGameState_Live)
-		return;
-	
-	if(flag == INVALID_ENT_REFERENCE)
-		return;
-		
 	int iBone;
 	float boneorigin[3], boneangles[3];
 	DispatchKeyValue(flag, "modelscale", "0.8");
@@ -144,7 +138,7 @@ stock void PickUpFlag(int flag, int client)
 				else if(GetClientTeam(i) == CS_TEAM_CT)
 					EmitSoundToClientAny(i, SOUND_ENEMY_FLAG_TAKEN, _, SNDCHAN_AUTO);
 
-				ShowSyncHudText(i, g_hHudSynchT, "FLAG TAKEN");
+				ShowSyncHudText(i, g_hHudSynchT, "%t", "Flag Taken");
 			}
 		}
 		if(g_hFlagTimerT != INVALID_HANDLE)
@@ -167,7 +161,7 @@ stock void PickUpFlag(int flag, int client)
 				else if(GetClientTeam(i) == CS_TEAM_CT)
 					EmitSoundToClientAny(i, SOUND_YOUR_FLAG_TAKEN, _, SNDCHAN_AUTO);
 				
-				ShowSyncHudText(i, g_hHudSynchCT, "FLAG TAKEN");
+				ShowSyncHudText(i, g_hHudSynchCT, "%t", "Flag Taken");
 			}
 		}
 		if(g_hFlagTimerCT != INVALID_HANDLE)
@@ -212,7 +206,7 @@ stock void DropFlag(int flag, int client)
 		for (int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i))
-				ShowSyncHudText(i, g_hHudSynchCT, "FLAG DROPPED");
+				ShowSyncHudText(i, g_hHudSynchCT, "%t", "Flag Dropped");
 		}
 		g_iFlagTimerCT = g_FlagReturnTime.IntValue;
 		g_hFlagTimerCT = CreateTimer(1.0, Timer_Flag, CS_TEAM_CT, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -223,7 +217,7 @@ stock void DropFlag(int flag, int client)
 		for (int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i))
-				ShowSyncHudText(i, g_hHudSynchT, "FLAG DROPPED");
+				ShowSyncHudText(i, g_hHudSynchT, "%t", "Flag Dropped");
 		}
 		g_iFlagTimerT = g_FlagReturnTime.IntValue;
 		g_hFlagTimerT = CreateTimer(1.0, Timer_Flag, CS_TEAM_T, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
@@ -315,13 +309,13 @@ stock void SpawnProp(float pos[3], float angles[3], int client, const char[] mod
 {
 	if(!IsPlayerAlive(client))
 	{
-		ReplyToCommand(client, "%s \x07You cannot build while dead!", FORTWARS_PREFIX);
+		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Build Dead");
 		return;
 	}
 		
 	if(g_eGameState != FortWarsGameState_Build || GameRules_GetProp("m_bWarmupPeriod") == 1)
 	{
-		ReplyToCommand(client, "%s \x07You can only build while in setup!", FORTWARS_PREFIX);
+		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Build Not Setup");
 		return;
 	}
 	
@@ -359,10 +353,10 @@ stock void RemoveProp(int client, int prop)
    		SetEntProp(client, Prop_Send, "m_iAccount", GetEntProp(client, Prop_Send, "m_iAccount")+price);
    		AcceptEntityInput(prop, "Kill");
    		g_iProps[client]--;
-   		PrintToChat(client, "%s \x07Prop removed! \x04+%d$", FORTWARS_PREFIX, price);
+   		PrintToChat(client, "%s \x07%t \x04+%d$", FORTWARS_PREFIX, "Prop Removed", price);
    	}
    	else
-   		PrintToChat(client, "%s \x07That is not your prop!", FORTWARS_PREFIX);
+   		PrintToChat(client, "%s \x07%t", FORTWARS_PREFIX, "Not Your Prop");
 }
 
 stock void EnablePropDamage()

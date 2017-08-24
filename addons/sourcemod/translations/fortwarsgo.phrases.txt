@@ -1,0 +1,159 @@
+"Phrases"
+{
+	"Primary Weapon Set"
+	{
+		"en"			"You've set your primary weapon to"
+	}
+	
+	"Secondary Weapon Set"
+	{
+		"en"			"You've set your secondary weapon to"
+	}
+
+	"Not Enough Money"
+	{
+		"en"			"You cannot afford that prop!"
+	}
+	
+	"Cannot Place Props"
+	{
+		"en"			"You cannot place any more props!"
+	}
+	
+	"Red Team"
+	{
+		"en"			"Red Team"
+	}
+	
+	"Blue Team"
+	{
+		"en"			"Blue Team"
+	}
+	
+	"Guns Notice"
+	{
+		"#format"		"{1:s},{2:s}"
+		"en"			"Type {1}!guns{2} to equip and save weapons"
+	}
+	
+	"Props"
+	{
+		"en"			"Props"
+	}
+	
+	"Money"
+	{
+		"en"			"Money"
+	}
+	
+	"Buttons"
+	{
+		"en"			"Buttons"
+	}
+	
+	"Remove"
+	{
+		"en"			"Remove"
+	}
+	
+	"Guns"
+	{
+		"en"			"Guns"
+	}
+	
+	"Primary"
+	{
+		"en"			"Primary"
+	}
+	
+	"Secondary"
+	{
+		"en"			"Secondary"
+	}
+	
+	"Prop Tip"
+	{
+		"en"			"Hold E to move, Hold R to rotate"
+	}
+	
+	"Cannot Stuck Dead"
+	{
+		"en"			"You cannot use stuck while dead!"
+	}
+	
+	"Cannot Stuck Build"
+	{
+		"en"			"You can use stuck in setup/build mode!"
+	}
+	
+	"Stuck Timer"
+	{
+		"#format"		"{1:s},{2:d},{3:s}"
+		"en"			"You need to wait {1}{2}{3} seconds to use stuck!"
+	}
+	
+	"Cannot Build Dead"
+	{
+		"en"			"You cannot build while dead!"
+	}
+	
+	"Cannot Build Not Setup"
+	{
+		"en"			"You can only build while in setup!"
+	}
+	
+	"Primary Menu"
+	{
+		"en"			"Primary Weapon"
+	}
+	
+	"Secondary Menu"
+	{
+		"en"			"Secondary Weapon"
+	}
+	
+	"Prop Removed"
+	{
+		"en"			"Prop Removed"
+	}
+		
+	"Not Your Prop"
+	{
+		"en"			"That is not your prop!"
+	}
+	
+	"Respawning"
+	{
+		"en"			"Respawning in"
+	}
+	
+	"Respawned"
+	{
+		"en"			"You've been respawned"
+	}
+	
+	"Setup Time"
+	{
+		"en"			"Setup Time"
+	}
+	
+	"Flag Taken"
+	{
+		"en"			"FLAG TAKEN"
+	}
+	
+	"Flag Dropped"
+	{
+		"en"			"FLAG DROPPED"
+	}
+	
+	"Flag Returns"
+	{
+		"en"			"FLAG RETURNS IN"
+	}
+	
+	"Flag Returned"
+	{
+		"en"			"FLAG RETURNED"
+	}
+}

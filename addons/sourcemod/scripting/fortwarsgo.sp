@@ -1,7 +1,7 @@
 #pragma semicolon 1
 
 #define PLUGIN_AUTHOR "Rachnus"
-#define PLUGIN_VERSION "1.0"
+#define PLUGIN_VERSION "1.01"
 
 #include <sourcemod>
 #include <sdktools>
@@ -118,6 +118,9 @@ public void OnPluginStart()
 	if(g_Game != Engine_CSGO)
 		SetFailState("This plugin is for CSGO.");	
 	
+	LoadTranslations("common.phrases");
+	LoadTranslations("fortwarsgo.phrases");
+	
 	g_FlagReturnTime = CreateConVar("fortwarsgo_flag_return_time", "30", "The amount of time in seconds it takes until the flag returns to its spawn if its left somewhere", FCVAR_NOTIFY);
 	g_SetupTime = CreateConVar("fortwarsgo_setup_time", "3", "The amount of time in minutes each team got to build", FCVAR_NOTIFY);
 	g_MatchTime = CreateConVar("fortwarsgo_match_time", "7", "The amount of time in minutes one round lasts", FCVAR_NOTIFY);
@@ -210,13 +213,13 @@ public Action Command_Stuck(int client, int args)
 {
 	if(!IsPlayerAlive(client))
 	{
-		ReplyToCommand(client, "%s \x07You cannot use stuck while dead!", FORTWARS_PREFIX);
+		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Stuck");
 		return Plugin_Continue;
 	}
 		
 	if(g_eGameState != FortWarsGameState_Build || GameRules_GetProp("m_bWarmupPeriod") == 1)
 	{
-		ReplyToCommand(client, "%s \x07You can use stuck in setup/build mode!", FORTWARS_PREFIX);
+		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Stuck Build");
 		return Plugin_Continue;
 	}
 	
@@ -229,7 +232,7 @@ public Action Command_Stuck(int client, int args)
 	
 	if(time > 0.0)
 	{
-		ReplyToCommand(client, "%s \x09You need to wait \x04%d\x09 seconds to use stuck!", FORTWARS_PREFIX, RoundToNearest(time));
+		ReplyToCommand(client, "%s \x09%t", FORTWARS_PREFIX, "Stuck Timer", "\x04", RoundToNearest(time), "\x09");
 		return Plugin_Handled;
 	}
 	g_fTimeUsedStuck[client] = GetGameTime();
@@ -252,21 +255,26 @@ public Action Command_Build(int client, int args)
 {
 	if(!IsPlayerAlive(client))
 	{
-		ReplyToCommand(client, "%s \x07You cannot build while dead!", FORTWARS_PREFIX);
+		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Build Dead");
 		return Plugin_Continue;
 	}
 		
 	if(g_eGameState != FortWarsGameState_Build || GameRules_GetProp("m_bWarmupPeriod") == 1)
 	{
-		ReplyToCommand(client, "%s \x07You can only build while in setup!", FORTWARS_PREFIX);
+		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Build Not Setup");
 		return Plugin_Continue;
 	}
 	
 	Menu menu = new Menu(BuildMenuHandler);
 	menu.SetTitle("FortWarsGO");
-	menu.AddItem("", "Props");
-	menu.AddItem("", "Remove");
-	menu.AddItem("", "Guns");
+	
+	char szItem[32];
+	Format(szItem, sizeof(szItem), "%t", "Props");
+	menu.AddItem("", szItem);
+	Format(szItem, sizeof(szItem), "%t", "Remove");
+	menu.AddItem("", szItem);
+	Format(szItem, sizeof(szItem), "%t", "Guns");
+	menu.AddItem("", szItem);
 	menu.ExitButton = true;
 	menu.Display(client, MENU_TIME_FOREVER);
 	return Plugin_Continue;
@@ -276,13 +284,13 @@ public Action Command_Props(int client, int args)
 {
 	if(!IsPlayerAlive(client))
 	{
-		ReplyToCommand(client, "%s \x07You cannot build while dead!", FORTWARS_PREFIX);
+		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Build Dead");
 		return Plugin_Continue;
 	}
 		
 	if(g_eGameState != FortWarsGameState_Build || GameRules_GetProp("m_bWarmupPeriod") == 1)
 	{
-		ReplyToCommand(client, "%s \x07You can only build while in setup!", FORTWARS_PREFIX);
+		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Build Not Setup");
 		return Plugin_Continue;
 	}
 		
@@ -292,7 +300,9 @@ public Action Command_Props(int client, int args)
 	int price, health;
 	
 	Menu menu = new Menu(PropsMenuHandler);
-	menu.SetTitle("Props");
+	char szItem[32];
+	Format(szItem, sizeof(szItem), "%t", "Props");
+	menu.SetTitle(szItem);
 	g_hProps.Rewind();
 	if(g_hProps.GotoFirstSubKey())
 	{
@@ -319,13 +329,13 @@ public Action Command_Remove(int client, int args)
 {
 	if(!IsPlayerAlive(client))
 	{
-		ReplyToCommand(client, "%s \x07You cannot build while dead!", FORTWARS_PREFIX);
+		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Build Dead");
 		return Plugin_Continue;
 	}
 		
 	if(g_eGameState != FortWarsGameState_Build || GameRules_GetProp("m_bWarmupPeriod") == 1)
 	{
-		ReplyToCommand(client, "%s \x07You can only build while in setup!", FORTWARS_PREFIX);
+		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Build Not Setup");
 		return Plugin_Continue;
 	}
 		
@@ -339,9 +349,13 @@ public Action Command_Remove(int client, int args)
 public Action Command_Guns(int client, int args)
 {
 	Menu menu = new Menu(GunsMenuHandler);
-	menu.SetTitle("Guns");
-	menu.AddItem("", "Primary");
-	menu.AddItem("", "Secondary");
+	char szItem[32];
+	Format(szItem, sizeof(szItem), "%t", "Guns");
+	menu.SetTitle(szItem);
+	Format(szItem, sizeof(szItem), "%t", "Primary");
+	menu.AddItem("", szItem);
+	Format(szItem, sizeof(szItem), "%t", "Secondary");
+	menu.AddItem("", szItem);
 	menu.ExitBackButton = true;
 	menu.ExitButton = true;
 	menu.Display(client, MENU_TIME_FOREVER);
@@ -359,7 +373,9 @@ public int GunsMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 				case 0:
 				{
 					Menu primaryMenu = new Menu(PrimaryMenuHandler);
-					primaryMenu.SetTitle("Primary Weapon");
+					char szTitle[64];
+					Format(szTitle, sizeof(szTitle), "%t", "Primary Menu");
+					primaryMenu.SetTitle(szTitle);
 					primaryMenu.AddItem("weapon_m4a1;M4A4", "M4A4");
 					primaryMenu.AddItem("weapon_m4a1_silencer;M4A1 (Silencer)", "M4A1 (Silencer)");
 					primaryMenu.AddItem("weapon_ak47;AK-47", "AK-47");
@@ -386,7 +402,9 @@ public int GunsMenuHandler(Menu menu, MenuAction action, int param1, int param2)
 				case 1:
 				{
 					Menu secondaryMenu = new Menu(SecondaryMenuHandler);
-					secondaryMenu.SetTitle("Secondary Weapon");
+					char szTitle[64];
+					Format(szTitle, sizeof(szTitle), "%t", "Secondary Menu");
+					secondaryMenu.SetTitle(szTitle);
 					secondaryMenu.AddItem("weapon_deagle;Deagle", "Deagle");
 					secondaryMenu.AddItem("weapon_p250;P250", "P250");
 					secondaryMenu.AddItem("weapon_cz75a;CZ75-Auto", "CZ75-Auto");
@@ -431,7 +449,7 @@ public int PrimaryMenuHandler(Menu menu, MenuAction action, int param1, int para
 			
 			g_szPrimary[param1] = szTempArray[0];
 			SetClientCookie(param1, g_hPrimaryWeapon, szTempArray[0]); 
-			PrintToChat(param1, "%s \x09You've set your primary weapon to \x04%s", FORTWARS_PREFIX, szTempArray[1]);
+			PrintToChat(param1, "%s \x09%t \x04%s", FORTWARS_PREFIX, "Primary Weapon Set", szTempArray[1]);
 			if(g_eGameState == FortWarsGameState_Live || GameRules_GetProp("m_bWarmupPeriod") == 1)
 				EquipPrefWeapons(param1);
 				
@@ -465,7 +483,7 @@ public int SecondaryMenuHandler(Menu menu, MenuAction action, int param1, int pa
 			
 			g_szSecondary[param1] = szTempArray[0];
 			SetClientCookie(param1, g_hSecondaryWeapon, szTempArray[0]); 
-			PrintToChat(param1, "%s \x09You've set your secondary weapon to \x04%s", FORTWARS_PREFIX, szTempArray[1]);
+			PrintToChat(param1, "%s \x09%t \x04%s", FORTWARS_PREFIX, "Secondary Weapon Set", szTempArray[1]);
 			if(g_eGameState == FortWarsGameState_Live || GameRules_GetProp("m_bWarmupPeriod") == 1)
 				EquipPrefWeapons(param1);
 		}
@@ -499,7 +517,7 @@ public int PropsMenuHandler(Menu menu, MenuAction action, int param1, int param2
 			int team = GetClientTeam(param1);
 			if(GetEntProp(param1, Prop_Send, "m_iAccount") < price)
 			{
-				PrintToChat(param1, "%s \x07You cannot afford that prop!", FORTWARS_PREFIX);
+				PrintToChat(param1, "%s \x07%t", FORTWARS_PREFIX, "Not Enough Money");
 				Command_Props(param1, 0);
 				return 0;
 			}
@@ -507,7 +525,7 @@ public int PropsMenuHandler(Menu menu, MenuAction action, int param1, int param2
 			{
 				if(g_iProps[param1] >= g_iRedMaxProps)
 				{
-					PrintToChat(param1, "%s \x07You cannot place any more props! \x04%d\x07/\x04%d", FORTWARS_PREFIX, g_iProps[param1], g_iRedMaxProps);
+					PrintToChat(param1, "%s \x07%t \x04%d\x07/\x04%d", FORTWARS_PREFIX, "Cannot Place Props", g_iProps[param1], g_iRedMaxProps);
 					Command_Props(param1, 0);
 					return 0;
 				}
@@ -516,7 +534,7 @@ public int PropsMenuHandler(Menu menu, MenuAction action, int param1, int param2
 			{
 				if(g_iProps[param1] >= g_iBlueMaxProps)
 				{
-					PrintToChat(param1, "%s \x07You cannot place any more props! \x04%d\x07/\x04%d", FORTWARS_PREFIX, g_iProps[param1], g_iBlueMaxProps);
+					PrintToChat(param1, "%s \x07%t \x04%d\x07/\x04%d", FORTWARS_PREFIX, "Cannot Place Props", g_iProps[param1], g_iBlueMaxProps);
 					Command_Props(param1, 0);
 					return 0;
 				}
@@ -595,9 +613,15 @@ public void OnPropDamaged(const char[] output, int caller, int activator, float 
 
 public Action OnTouchFlagTrigger(int caller, int activator)
 {
+	if(g_eGameState != FortWarsGameState_Live)
+		return Plugin_Continue;
+	
 	int flag = GetEntPropEnt(caller, Prop_Data, "m_hMoveParent");
 	int tflag = EntRefToEntIndex(g_iFlagT);
 	int ctflag = EntRefToEntIndex(g_iFlagCT);
+	
+	if(flag == INVALID_ENT_REFERENCE)
+		return Plugin_Continue;
 	
 	if(activator > 0 && activator <= MaxClients && IsPlayerAlive(activator))
 	{
@@ -613,6 +637,7 @@ public Action OnTouchFlagTrigger(int caller, int activator)
 		}
 	}
 	SDKUnhook(caller, SDKHook_StartTouch, OnTouchFlagTrigger);
+	return Plugin_Continue;
 }
 
 public Action OnEnterCaptureZone(int caller, int activator)
@@ -636,7 +661,7 @@ public Action OnEnterCaptureZone(int caller, int activator)
 					{
 						//T SCORE
 						g_iRedScore++;
-						PrintToChatAll("%s \x07Terrorists\x01: \x04%d\x01 | \x0CCounter-Terrorists\x01: \x04%d", FORTWARS_PREFIX, g_iRedScore, g_iBlueScore);
+						PrintToChatAll("%s \x07%t\x01: \x04%d\x01 | \x0C%t\x01: \x04%d", FORTWARS_PREFIX, "Red Team", g_iRedScore, "Blue Team", g_iBlueScore);
 						ResetFlag(ctflag);
 						
 						if(g_iRedScore >= g_AmountOfFlagsToWin.IntValue)
@@ -687,7 +712,7 @@ public Action OnEnterCaptureZone(int caller, int activator)
 					{
 						//CT SCORE
 						g_iBlueScore++;
-						PrintToChatAll("%s \x07Terrorists\x01: \x04%d\x01 | \x0CCounter-Terrorists\x01: \x04%d", FORTWARS_PREFIX, g_iRedScore, g_iBlueScore);
+						PrintToChatAll("%s \x07%t\x01: \x04%d\x01 | \x0C%t\x01: \x04%d", FORTWARS_PREFIX, "Red Team", g_iRedScore, "Blue Team", g_iBlueScore);
 						ResetFlag(tflag);
 						
 						if(g_iBlueScore >= g_AmountOfFlagsToWin.IntValue)
@@ -797,7 +822,7 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
-	PrintToChat(client, "%s \x09Type \x04!guns \x09to equip and save weapon presets", FORTWARS_PREFIX);
+	PrintToChat(client, "%s \x09%t", FORTWARS_PREFIX, "Guns Notice", "\x04", "\x09");
 	if(g_eGameState == FortWarsGameState_Build)
 	{
 		StripWeapons(client, false);
@@ -906,12 +931,12 @@ public Action Timer_Spawn(Handle timer, any flagteam)
 					if(time > 0.0)
 					{
 						SetHudTextParams(0.438, 0.20, 1.0, 0, 255, 0, 100, 0, 0.0, 0.0, 0.0);
-						ShowHudText(i, -1, "Respawning in: %d", RoundToNearest(time));
+						ShowHudText(i, -1, "%t: %d", "Respawning", RoundToNearest(time));
 					}
 					else
 					{
 						SetHudTextParams(0.42, 0.20, 1.0, 0, 255, 0, 100, 0, 0.0, 0.0, 0.0);
-						ShowHudText(i, -1, "You've been respawned");
+						ShowHudText(i, -1, "%t", "Respawned");
 						g_fTimeKilled[i] = 0.0;
 						CS_RespawnPlayer(i);
 					}
@@ -980,7 +1005,7 @@ public Action Timer_Setup(Handle timer, any flagteam)
 	for (int i = 1; i <= MaxClients; i++)
 	{
 		if(IsClientInGame(i))
-			ShowHudText(i, -1, "Setup Time: %d", g_iSetupTimer);
+			ShowHudText(i, -1, "%t: %d", "Setup Time", g_iSetupTimer);
 	}
 	g_iSetupTimer--;
 	
@@ -1001,7 +1026,7 @@ public Action Timer_Flag(Handle timer, any flagteam)
 		for (int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i))
-				ShowSyncHudText(i, g_hHudSynchT, "FLAG RETURNS IN: %d", g_iFlagTimerT);
+				ShowSyncHudText(i, g_hHudSynchT, "%t: %d", "Flag Returns", g_iFlagTimerT);
 		}
 		
 		if(g_iFlagTimerT <= 0)
@@ -1018,7 +1043,7 @@ public Action Timer_Flag(Handle timer, any flagteam)
 					else if(GetClientTeam(i) == CS_TEAM_CT)
 						EmitSoundToClientAny(i, SOUND_ENEMY_FLAG_RETURNED, _, SNDCHAN_AUTO);
 					
-					ShowSyncHudText(i, g_hHudSynchT, "FLAG RETURNED");
+					ShowSyncHudText(i, g_hHudSynchT, "%t", "Flag Returned");
 				}
 			}
 			TeleportEntity(flag, g_vecFlagPosT, NULL_VECTOR, NULL_VECTOR);
@@ -1043,7 +1068,7 @@ public Action Timer_Flag(Handle timer, any flagteam)
 		for (int i = 1; i <= MaxClients; i++)
 		{
 			if(IsClientInGame(i))
-				ShowSyncHudText(i, g_hHudSynchCT, "FLAG RETURNS IN: %d", g_iFlagTimerCT);
+				ShowSyncHudText(i, g_hHudSynchCT, "%t: %d", "Flag Returns", g_iFlagTimerCT);
 		}
 		
 		if(g_iFlagTimerCT <= 0)
@@ -1060,7 +1085,7 @@ public Action Timer_Flag(Handle timer, any flagteam)
 					else if(GetClientTeam(i) == CS_TEAM_CT)
 						EmitSoundToClientAny(i, SOUND_YOUR_FLAG_RETURNED, _, SNDCHAN_AUTO);
 						
-					ShowSyncHudText(i, g_hHudSynchCT, "FLAG RETURNED");
+					ShowSyncHudText(i, g_hHudSynchCT, "%t", "Flag Returned");
 				}
 			}
 			TeleportEntity(flag, g_vecFlagPosCT, NULL_VECTOR, NULL_VECTOR);
@@ -1076,7 +1101,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 {
 	if(g_eGameState == FortWarsGameState_Build)
 	{
-		PrintHintText(client, "<font size='20' face=''>Props: <font color='#00ff00'>%d/%d</font>\n<font size='20' face=''>Money: <font color='#00ff00'>%d$</font>\n<font size='16' face=''>Buttons: <font color='#cc3300'>Hold E to move, Hold R to rotate", g_iProps[client], g_iRedMaxProps, GetEntProp(client, Prop_Send, "m_iAccount"));
+		PrintHintText(client, "<font size='20' face=''>%t: <font color='#00ff00'>%d/%d</font>\n<font size='20' face=''>%t: <font color='#00ff00'>%d$</font>\n<font size='16' face=''>%t: <font color='#cc3300'>%t", "Props", g_iProps[client], g_iRedMaxProps, "Money", GetEntProp(client, Prop_Send, "m_iAccount"), "Buttons", "Prop Tip");
 		if(buttons & IN_RELOAD || buttons & IN_USE)
 		{	
 			int prop = EntRefToEntIndex(g_iActiveProp[client]);
