@@ -24,12 +24,12 @@
 		"price" "30"
 		"health"	"500"
 	}
-	"Wooden Wall"
-	{
-		"model"	"models/props/cs_militia/bathroomwallhole01_wood_broken.mdl"
-		"price" "80"
-		"health"	"200"
-	}
+	//"Wooden Wall"
+	//{
+	//	"model"	"models/props/cs_militia/bathroomwallhole01_wood_broken.mdl"
+	//	"price" "80"
+	//	"health"	"200"
+	//}
 	"Big Stone Wall"
 	{
 		"model"	"models/props_cemetery/crypts_wall.mdl"

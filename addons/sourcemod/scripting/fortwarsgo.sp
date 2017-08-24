@@ -1,7 +1,7 @@
 #pragma semicolon 1
 
 #define PLUGIN_AUTHOR "Rachnus"
-#define PLUGIN_VERSION "1.01"
+#define PLUGIN_VERSION "1.02"
 
 #include <sourcemod>
 #include <sdktools>
@@ -608,8 +608,19 @@ public int BuildMenuHandler(Menu menu, MenuAction action, int param1, int param2
 
 public void OnPropDamaged(const char[] output, int caller, int activator, float delay)
 {
+	int hp = GetEntProp(caller, Prop_Data, "m_iHealth");
+	if(hp <= 0)
+		AcceptEntityInput(caller, "Kill");
 	ColorProp(caller);
 }
+
+public void OnPropBreak(const char[] output, int caller, int activator, float delay)
+{
+	PrintToChatAll("PROP BREAK");
+	AcceptEntityInput(caller, "Kill");
+}
+
+
 
 public Action OnTouchFlagTrigger(int caller, int activator)
 {
@@ -770,7 +781,7 @@ public Action Event_RoundFreezeEnd(Event event, const char[] name, bool dontBroa
 {
 	if(GameRules_GetProp("m_bWarmupPeriod") != 1)
 	{
-		g_iSetupTimer = (g_SetupTime.IntValue * 60);
+		g_iSetupTimer = 5; //(g_SetupTime.IntValue * 60); EDIT TIMER TIME
 		g_hSetupTimer = CreateTimer(1.0, Timer_Setup, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);	
 		EmitSoundToAllAny(SOUND_PREPARE_TO_FIGHT);
 		int tmoney = RoundToNearest(g_MoneyPerTeam.FloatValue / float(GetAliveTeamCount(CS_TEAM_T)));

@@ -321,7 +321,7 @@ stock void SpawnProp(float pos[3], float angles[3], int client, const char[] mod
 	
 	g_iProps[client]++;
 	char szTargetName[16];
-	Format(szTargetName, sizeof(szTargetName), "prop;%d;%d;%d;%d", GetClientUserId(client), GetClientTeam(client), price, health);
+	Format(szTargetName, sizeof(szTargetName), "prop;%d;%d;%d", GetClientUserId(client), GetClientTeam(client), price);
 	int prop = CreateEntityByName("prop_dynamic_override");
 	DispatchKeyValue(prop, "model", model);
 	DispatchKeyValue(prop, "disablereceiveshadows", "1");
@@ -336,6 +336,7 @@ stock void SpawnProp(float pos[3], float angles[3], int client, const char[] mod
 	SetEntProp(prop, Prop_Data, "m_iHealth", health);
 
 	HookSingleEntityOutput(prop, "OnHealthChanged", OnPropDamaged, false);
+	HookSingleEntityOutput(prop, "OnBreak", OnPropBreak, false);
 }
 
 stock void RemoveProp(int client, int prop)
@@ -364,7 +365,7 @@ stock void EnablePropDamage()
 	int iEnt = MAXPLAYERS + 1;
 	char targetName[32];
 	char propNameBuffers[4][12];
-	while((iEnt = FindEntityByClassname(iEnt, "prop_dynamic")) != -1)
+	while((iEnt = FindEntityByClassname(iEnt, "prop_dynamic*")) != -1)
 	{
 		GetEntPropString(iEnt, Prop_Data, "m_iName", targetName, sizeof(targetName));
    		ExplodeString(targetName, ";", propNameBuffers, sizeof(propNameBuffers), sizeof(propNameBuffers[]));
@@ -503,7 +504,7 @@ stock void RemoveDisconnectedProps(int client)
 {
 	int iEnt = MAXPLAYERS + 1;
 	char targetName[32];
-	while((iEnt = FindEntityByClassname(iEnt, "prop_dynamic_override")) != -1)
+	while((iEnt = FindEntityByClassname(iEnt, "prop_dynamic*")) != -1)
 	{
 		GetEntPropString(iEnt, Prop_Data, "m_iName", targetName, sizeof(targetName));
 		char propNameBuffers[4][12];
