@@ -105,7 +105,7 @@ FortWarsGameState g_eGameState;
 #include "fortwarsgo/natives.sp"
 public Plugin myinfo = 
 {
-	name = "FortWarsGO v1.03",
+	name = "FortWarsGO v1.04",
 	author = PLUGIN_AUTHOR,
 	description = "Build forts then play Capture The Flag",
 	version = PLUGIN_VERSION,
