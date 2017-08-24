@@ -1,7 +1,7 @@
 #pragma semicolon 1
 
 #define PLUGIN_AUTHOR "Rachnus"
-#define PLUGIN_VERSION "1.03"
+#define PLUGIN_VERSION "1.04"
 
 #include <sourcemod>
 #include <sdktools>
@@ -613,14 +613,6 @@ public void OnPropDamaged(const char[] output, int caller, int activator, float 
 		AcceptEntityInput(caller, "Kill");
 	ColorProp(caller);
 }
-
-public void OnPropBreak(const char[] output, int caller, int activator, float delay)
-{
-	PrintToChatAll("PROP BREAK");
-	AcceptEntityInput(caller, "Kill");
-}
-
-
 
 public Action OnTouchFlagTrigger(int caller, int activator)
 {

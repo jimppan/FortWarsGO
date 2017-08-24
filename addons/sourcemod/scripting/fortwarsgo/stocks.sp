@@ -336,7 +336,6 @@ stock void SpawnProp(float pos[3], float angles[3], int client, const char[] mod
 	SetEntProp(prop, Prop_Data, "m_iHealth", health);
 
 	HookSingleEntityOutput(prop, "OnHealthChanged", OnPropDamaged, false);
-	HookSingleEntityOutput(prop, "OnBreak", OnPropBreak, false);
 }
 
 stock void RemoveProp(int client, int prop)
