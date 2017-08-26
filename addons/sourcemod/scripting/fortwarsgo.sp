@@ -1,7 +1,7 @@
 #pragma semicolon 1
 
 #define PLUGIN_AUTHOR "Rachnus"
-#define PLUGIN_VERSION "1.04"
+#define PLUGIN_VERSION "1.05"
 
 #include <sourcemod>
 #include <sdktools>
@@ -105,7 +105,7 @@ FortWarsGameState g_eGameState;
 #include "fortwarsgo/natives.sp"
 public Plugin myinfo = 
 {
-	name = "FortWarsGO v1.04",
+	name = "FortWarsGO v1.05",
 	author = PLUGIN_AUTHOR,
 	description = "Build forts then play Capture The Flag",
 	version = PLUGIN_VERSION,
