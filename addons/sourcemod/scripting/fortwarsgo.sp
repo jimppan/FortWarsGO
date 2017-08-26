@@ -631,15 +631,14 @@ public Action OnTouchFlagTrigger(int caller, int activator)
 		if(flag == tflag)
 		{
 			if(GetClientTeam(activator) == CS_TEAM_CT)
-				PickUpFlag(flag, activator);
+				PickUpFlag(flag, activator, caller);
 		}
 		else if(flag == ctflag)
 		{
 			if(GetClientTeam(activator) == CS_TEAM_T)
-				PickUpFlag(flag, activator);
+				PickUpFlag(flag, activator, caller);
 		}
 	}
-	SDKUnhook(caller, SDKHook_StartTouch, OnTouchFlagTrigger);
 	return Plugin_Continue;
 }
 

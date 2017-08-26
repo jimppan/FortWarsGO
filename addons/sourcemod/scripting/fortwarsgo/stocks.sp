@@ -110,8 +110,10 @@ stock void CreateFlagTrigger(int flag, float pos[3])
 	}
 }
 
-stock void PickUpFlag(int flag, int client)
+stock void PickUpFlag(int flag, int client, int trigger)
 {
+	SDKUnhook(trigger, SDKHook_StartTouch, OnTouchFlagTrigger);
+	
 	int iBone;
 	float boneorigin[3], boneangles[3];
 	DispatchKeyValue(flag, "modelscale", "0.8");
