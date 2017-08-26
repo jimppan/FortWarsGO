@@ -1,7 +1,7 @@
 #pragma semicolon 1
 
 #define PLUGIN_AUTHOR "Rachnus"
-#define PLUGIN_VERSION "1.05"
+#define PLUGIN_VERSION "1.06"
 
 #include <sourcemod>
 #include <sdktools>
@@ -84,6 +84,7 @@ ArrayList g_hBuildZonesT;
 ArrayList g_hBuildZonesCT;
 
 KeyValues g_hProps;
+ConVar g_Enable;
 
 ConVar g_FlagReturnTime;
 ConVar g_SetupTime;
@@ -105,7 +106,7 @@ FortWarsGameState g_eGameState;
 #include "fortwarsgo/natives.sp"
 public Plugin myinfo = 
 {
-	name = "FortWarsGO v1.05",
+	name = "FortWarsGO v1.06",
 	author = PLUGIN_AUTHOR,
 	description = "Build forts then play Capture The Flag",
 	version = PLUGIN_VERSION,
@@ -121,6 +122,7 @@ public void OnPluginStart()
 	LoadTranslations("common.phrases");
 	LoadTranslations("fortwarsgo.phrases");
 	
+	g_Enable = CreateConVar("fortwarsgo_enable", "1", "Enable/Disable fortwars");
 	g_FlagReturnTime = CreateConVar("fortwarsgo_flag_return_time", "30", "The amount of time in seconds it takes until the flag returns to its spawn if its left somewhere", FCVAR_NOTIFY);
 	g_SetupTime = CreateConVar("fortwarsgo_setup_time", "3", "The amount of time in minutes each team got to build", FCVAR_NOTIFY);
 	g_MatchTime = CreateConVar("fortwarsgo_match_time", "7", "The amount of time in minutes one round lasts", FCVAR_NOTIFY);
@@ -211,6 +213,9 @@ public void ConVar_MatchSetupTime(ConVar convar, const char[] oldValue, const ch
 
 public Action Command_Stuck(int client, int args)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Continue;
+		
 	if(!IsPlayerAlive(client))
 	{
 		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Stuck");
@@ -253,6 +258,9 @@ public Action Command_ReloadProps(int client, int args)
 
 public Action Command_Build(int client, int args)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Continue;
+		
 	if(!IsPlayerAlive(client))
 	{
 		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Build Dead");
@@ -282,6 +290,9 @@ public Action Command_Build(int client, int args)
 
 public Action Command_Props(int client, int args)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Continue;
+		
 	if(!IsPlayerAlive(client))
 	{
 		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Build Dead");
@@ -327,6 +338,9 @@ public Action Command_Props(int client, int args)
 
 public Action Command_Remove(int client, int args)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Continue;
+		
 	if(!IsPlayerAlive(client))
 	{
 		ReplyToCommand(client, "%s \x07%t", FORTWARS_PREFIX, "Cannot Build Dead");
@@ -348,6 +362,9 @@ public Action Command_Remove(int client, int args)
 
 public Action Command_Guns(int client, int args)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Continue;
+		
 	Menu menu = new Menu(GunsMenuHandler);
 	char szItem[32];
 	Format(szItem, sizeof(szItem), "%t", "Guns");
@@ -754,6 +771,9 @@ public Action OnEnterCaptureZone(int caller, int activator)
 
 public Action Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Continue;
+		
 	g_eGameState = FortWarsGameState_PostRound;
 	if(g_hSetupTimer != INVALID_HANDLE)
 	{
@@ -770,6 +790,9 @@ public Action Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 
 public Action Event_RoundFreezeEnd(Event event, const char[] name, bool dontBroadcast)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Continue;
+		
 	if(GameRules_GetProp("m_bWarmupPeriod") != 1)
 	{
 		g_iSetupTimer = (g_SetupTime.IntValue * 60);
@@ -799,10 +822,15 @@ public Action Event_RoundFreezeEnd(Event event, const char[] name, bool dontBroa
 	if(g_hMatchTimer != INVALID_HANDLE)
 		KillTimer(g_hMatchTimer);
 	g_hMatchTimer = CreateTimer(float(FindConVar("mp_roundtime").IntValue*60), Timer_Match);
+	
+	return Plugin_Continue;
 }
 
 public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Continue;
+		
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	int tflag = EntRefToEntIndex(g_iFlagT);
 	int ctflag = EntRefToEntIndex(g_iFlagCT);
@@ -819,6 +847,8 @@ public Action Event_PlayerDeath(Event event, const char[] name, bool dontBroadca
 		DropFlag(tflag, client);
 	else if(ctflagparent == client)
 		DropFlag(ctflag, client);
+		
+	return Plugin_Continue;
 }
 
 public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
@@ -833,10 +863,15 @@ public Action Event_PlayerSpawn(Event event, const char[] name, bool dontBroadca
 	{
 		EquipPrefWeapons(client);
 	}
+	
+	return Plugin_Continue;
 }
 
 public Action Event_RoundPostStart(Event event, const char[] name, bool dontBroadcast)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Continue;
+		
 	if(g_hFlagTimerT != INVALID_HANDLE)
 	{
 		KillTimer(g_hFlagTimerT);
@@ -854,8 +889,6 @@ public Action Event_RoundPostStart(Event event, const char[] name, bool dontBroa
 		KillTimer(g_hSetupTimer);
 		g_hSetupTimer = INVALID_HANDLE;
 	}
-	
-	
 	
 	for (int i = 1; i <= MaxClients; i++)
 	{
@@ -914,10 +947,15 @@ public Action Event_RoundPostStart(Event event, const char[] name, bool dontBroa
 	}
 	else
 		BreakBarrier();
+		
+	return Plugin_Continue;
 }
 
 public Action Timer_Spawn(Handle timer, any flagteam)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Stop;
+		
 	float time = 0.0;
 	for (int i = 1; i <= MaxClients; i++)
 	{
@@ -946,10 +984,15 @@ public Action Timer_Spawn(Handle timer, any flagteam)
 			}
 		}
 	}
+	
+	return Plugin_Continue;
 }
 
 public Action Timer_Match(Handle timer, any flagteam)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Stop;
+		
 	g_hMatchTimer = INVALID_HANDLE;
 	if(g_iRedScore < g_AmountOfFlagsToWin.IntValue && g_iBlueScore < g_AmountOfFlagsToWin.IntValue)
 	{
@@ -995,6 +1038,9 @@ public void StartGame()
 
 public Action Timer_Setup(Handle timer, any flagteam)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Stop;
+		
 	SetHudTextParams(0.445, 0.1, 1.0, 0, 255, 0, 100, 0, 0.0, 0.0, 0.0);
 	
 	if(g_iSetupTimer <= 0)
@@ -1016,6 +1062,9 @@ public Action Timer_Setup(Handle timer, any flagteam)
 
 public Action Timer_Flag(Handle timer, any flagteam)
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Stop;
+		
 	if(flagteam == CS_TEAM_T)
 	{
 		int flag = EntRefToEntIndex(g_iFlagT);
@@ -1101,6 +1150,9 @@ public Action Timer_Flag(Handle timer, any flagteam)
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
+	if(!g_Enable.BoolValue)
+		return Plugin_Continue;
+		
 	if(g_eGameState == FortWarsGameState_Build)
 	{
 		PrintHintText(client, "<font size='20' face=''>%t: <font color='#00ff00'>%d/%d</font>\n<font size='20' face=''>%t: <font color='#00ff00'>%d$</font>\n<font size='16' face=''>%t: <font color='#cc3300'>%t", "Props", g_iProps[client], g_iRedMaxProps, "Money", GetEntProp(client, Prop_Send, "m_iAccount"), "Buttons", "Prop Tip");
@@ -1258,10 +1310,15 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	
 	if(!(buttons & IN_USE))
 		g_bPressedUse[client] = false;
+		
+	return Plugin_Continue;
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
+	if(!g_Enable.BoolValue)
+		return;
+		
 	if(StrEqual(classname, "trigger_multiple", false))
 		SDKHook(entity, SDKHook_SpawnPost, OnEntitySpawned);
 }
@@ -1283,6 +1340,9 @@ public Action OnEntitySpawned(int entity)
 
 public void OnClientCookiesCached(int client)
 {
+	if(!g_Enable.BoolValue)
+		return;
+		
 	char value[32];
 	GetClientCookie(client, g_hPrimaryWeapon, value, sizeof(value));
 	g_szPrimary[client] = value;
@@ -1293,6 +1353,9 @@ public void OnClientCookiesCached(int client)
 
 public void OnClientDisconnect(int client)
 {
+	if(!g_Enable.BoolValue)
+		return;
+		
 	if(g_eGameState == FortWarsGameState_Build)
 		RemoveDisconnectedProps(client);
 	
